@@ -1,0 +1,67 @@
+name: Day issue
+description: One day of the 100 Days of Code challenge (user story)
+title: "Day NN — <short feature title>"
+labels: ["100daysofcode"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        One day of the **QRSafe 100 Days of Code** challenge. Keep it small: min 1h, target ~3h, one PR.
+  - type: input
+    id: story
+    attributes:
+      label: User story
+      description: "As a <user>, I want <capability>, so that <benefit>."
+      placeholder: "As a developer learning Swift in public, I want to add QR metadata detection, so that the app can read a code's payload."
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Where this fits, what already exists.
+    validations:
+      required: false
+  - type: textarea
+    id: swift-concept
+    attributes:
+      label: Swift concept(s) for today
+      description: The concept you will actually learn, with a doc link.
+      placeholder: "- AVCaptureMetadataOutput — how iOS surfaces machine-readable codes (https://developer.apple.com/documentation/avfoundation/avcapturemetadataoutput)"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Given / When / Then.
+      value: |
+        - [ ] Given <state>, when <action>, then <result>
+        - [ ] App builds & runs on simulator (and device if camera-related)
+    validations:
+      required: true
+  - type: textarea
+    id: dod
+    attributes:
+      label: Definition of Done
+      value: |
+        - [ ] Tests written/updated and green
+        - [ ] App builds & runs
+        - [ ] PR opened with `Closes #NN` and merged
+        - [ ] Instagram post published
+    validations:
+      required: true
+  - type: input
+    id: timebox
+    attributes:
+      label: Time box
+      value: "Min 1h · target ~3h"
+    validations:
+      required: false
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resources
+      description: Docs, forum threads, example code.
+    validations:
+      required: false
