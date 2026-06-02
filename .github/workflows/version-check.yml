@@ -1,0 +1,51 @@
+name: Version check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  version:
+    name: Validate app version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate MARKETING_VERSION
+        run: |
+          set -euo pipefail
+          pbxproj="qrsafe.xcodeproj/project.pbxproj"
+
+          if [ ! -f "$pbxproj" ]; then
+            echo "::error::$pbxproj not found"; exit 1
+          fi
+
+          # Collect every MARKETING_VERSION value across build configs/targets.
+          versions=$(grep -oE 'MARKETING_VERSION = [^;]+;' "$pbxproj" \
+            | sed -E 's/MARKETING_VERSION = (.*);/\1/' \
+            | tr -d ' ' | sort -u)
+
+          echo "Versions found:"
+          echo "$versions"
+
+          if [ -z "$versions" ]; then
+            echo "::error::No MARKETING_VERSION set in the project"; exit 1
+          fi
+
+          # All targets must agree on one version.
+          count=$(echo "$versions" | grep -c .)
+          if [ "$count" -ne 1 ]; then
+            echo "::error::MARKETING_VERSION is inconsistent across targets ($count distinct values)"
+            exit 1
+          fi
+
+          version="$versions"
+
+          # Accept X.Y or X.Y.Z (semver-ish).
+          if ! echo "$version" | grep -qE '^[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+            echo "::error::Invalid version '$version' (expected X.Y or X.Y.Z)"
+            exit 1
+          fi
+
+          echo "✅ App version $version is valid and consistent across all targets."
