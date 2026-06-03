@@ -6,12 +6,10 @@ struct User: View {
     var body: some View {
         VStack(spacing: 16) {
             if let safeUsername = username {
-                Text(
-                    "Hello, world! \(safeUsername), your username has \(safeUsername.count) characters"
-                )
-                .foregroundStyle(Color.primary)
-                .multilineTextAlignment(.center)
-                .padding()
+                let value = "Hello, world! \(safeUsername), your username has \(safeUsername.count) characters"
+                DefaultText(value: value)
+            } else {
+                DefaultText()
             }
         }
     }
