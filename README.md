@@ -10,7 +10,7 @@ QRSafe is a free iOS app that scans QR codes and instantly analyzes the link ins
 [![Swift](https://img.shields.io/badge/Swift-5.9%2B-orange)]()
 [![SwiftUI](https://img.shields.io/badge/UI-SwiftUI-green)]()
 [![License](https://img.shields.io/badge/license-TBD-lightgrey)]()
-[![100 Days of Code](https://img.shields.io/badge/%23100DaysOfCode-in%20progress-FF6B6B)]()
+[![100 Days of Code](https://img.shields.io/badge/%23xCodeUp100-in%20progress-FF6B6B)]()
 
 </div>
 
