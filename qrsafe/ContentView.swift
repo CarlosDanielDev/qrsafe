@@ -2,10 +2,18 @@ import SwiftUI
 
 struct ContentView: View {
     
+    let appName = "QRSafe"
+    
     var body: some View {
-        VStack {
-            Text("Code Up - QRSafe")
-                .font(Font.headline.bold())
+        VStack(spacing: 15) {
+            Text(appName)
+                .font(.largeTitle)
+                .foregroundStyle(Color.primary)
+            
+            TimeUpdate()
+            
+            User(username: "@carlosdanieldev")
+            
         }
     }
 
