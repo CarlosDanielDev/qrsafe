@@ -13,7 +13,7 @@ struct ContentView: View {
             TimeUpdate()
             
             User(username: "@carlosdanieldev")
-            
+            QRCodesSupported()
         }
     }
 
