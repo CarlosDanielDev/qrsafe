@@ -55,11 +55,6 @@
 			path = qrsafeTests;
 			sourceTree = "<group>";
 		};
-		072ACAA42FA19F2D00A4188C /* qrsafeUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = qrsafeUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,7 +87,6 @@
 			children = (
 				072ACA852FA19F2B00A4188C /* qrsafe */,
 				072ACA9A2FA19F2D00A4188C /* qrsafeTests */,
-				072ACAA42FA19F2D00A4188C /* qrsafeUITests */,
 				CD0C1A1DE0000000000000F0 /* Project Files */,
 				072ACA842FA19F2B00A4188C /* Products */,
 			);
@@ -177,9 +171,6 @@
 			);
 			dependencies = (
 				072ACAA32FA19F2D00A4188C /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				072ACAA42FA19F2D00A4188C /* qrsafeUITests */,
 			);
 			name = qrsafeUITests;
 			packageProductDependencies = (
