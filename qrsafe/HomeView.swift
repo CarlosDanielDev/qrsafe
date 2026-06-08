@@ -2,11 +2,12 @@ import SwiftUI
 
 struct HomeView: View {
     var body: some View {
-        VStack {
+        VStack(spacing: 24) {
             Text("Features")
                 .font(.title)
                 .fontWeight(.semibold)
                 .padding(.bottom)
+                .padding(.top, 42)
             
             FeatureCard(
                 iconName: "hare.circle.fill",
@@ -37,6 +38,7 @@ struct HomeView: View {
                 iconName: "hand.raised.fill",
                 description: "Private by design — no login, no cloud, no analytics; analysis runs offline어"
             )
+            Spacer()
         }
         .padding()
     }
@@ -44,4 +46,7 @@ struct HomeView: View {
 
 #Preview {
     HomeView()
+        .frame(maxHeight: .infinity)
+        .background(Gradient(colors: gradientColors))
+        .foregroundStyle(Color.white)
 }
