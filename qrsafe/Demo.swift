@@ -27,8 +27,27 @@ struct Demo: View {
                 Tab("Typography", systemImage: "character") {
                     renderTypography(geometry: geometry)
                 }
+                
+                Tab("Components", systemImage: "rectangle.3.group") {
+                    renderComponents(geometry: geometry)
+                }
             }
 
+        }
+    }
+
+    private func hello() {
+        print("Hello World")
+    }
+
+    private func renderComponents(geometry: GeometryProxy) -> some View {
+        VStack {
+            Button("Normal", action: hello)
+                .buttonStyle(QSPrimaryButtonStyle())
+            
+            Button("Disbled", action: hello)
+                .buttonStyle(QSPrimaryButtonStyle())
+                .disabled(true)
         }
     }
 
