@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomeView: View {
+struct FeaturesView: View {
     var body: some View {
         VStack(spacing: 24) {
             Text("Features")
@@ -45,7 +45,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    FeaturesView()
         .frame(maxHeight: .infinity)
         .background(Gradient(colors: gradientColors))
         .foregroundStyle(Color.white)

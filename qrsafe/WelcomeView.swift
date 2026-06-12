@@ -7,25 +7,20 @@ struct WelcomeView: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 30)
                     .frame(width: 150, height: 150)
-                    .foregroundStyle(.tint)
+                    .foregroundStyle(.qsWarning)
                 
                 Image(systemName: "qrcode.viewfinder")
                     .font(.system(size: 70))
-                    .foregroundStyle(Color.white)
-                
-//                Image(systemName: "lock.shield.fill")
-//                    .font(.system(size: 30))
-//                    .foregroundStyle(Color.white)
-//                    .position(x: 230, y: 300)
+                    .foregroundStyle(.qsBackground)
             }
             
             Text("Welcome to QRSafe!")
-                .font(.title)
+                .font(.qsTitle)
                 .fontWeight(.semibold)
                 .padding(.top)
 
             Text("Scan a QRCode. Know if it's safe before you tap.")
-                .font(.title2)
+                .font(.qsTitle2)
                 .multilineTextAlignment(.center)
         }
         .padding()

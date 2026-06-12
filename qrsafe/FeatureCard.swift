@@ -7,7 +7,7 @@ struct FeatureCard: View {
     var body: some View {
         HStack {
             Image(systemName: iconName)
-                .font(.largeTitle)
+                .font(.qsLargeTitle)
                 .frame(width: 50)
                 .padding(.trailing, 10)
             Text(description)
@@ -16,11 +16,11 @@ struct FeatureCard: View {
         .padding()
         .background {
             RoundedRectangle(cornerRadius: 12)
-                .foregroundStyle(.tint)
+                .foregroundStyle(.qsWarning)
                 .opacity(0.25)
                 .brightness(-0.4)
         }
-        .foregroundStyle(.white)
+        .foregroundStyle(.qsBackground)
     }
 }
 
