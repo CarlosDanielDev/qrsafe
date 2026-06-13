@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct QRCodesSupported: View {
+struct QRCodesSupportedView: View {
     private let qrCodes = QRPayload.allCases.map(\.rawValue)
     
     func showQRCodesSupported() -> some View {
