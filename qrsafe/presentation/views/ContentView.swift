@@ -7,7 +7,8 @@ let gradientColors: [Color] = [
 
 struct ContentView: View {
     var body: some View {
-        Demo()
+//        Demo()
+        HomeView()
     }
 
 }
