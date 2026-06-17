@@ -1,7 +1,20 @@
 import SwiftUI
 
+struct UIKitLabel: UIViewRepresentable {
+    let text: String
+    
+    func makeUIView(context: Context) -> UILabel {
+        UILabel()
+    }
+    
+    func updateUIView(_ label: UILabel, context: Context) {
+        label.text = text
+    }
+}
+
 struct Demo: View {
     @State private var isDark = false
+    @State private var name = "Carlos"
 
     private let tokens: [(Color, String)] = [
         (QSColors.background, "Background"),
@@ -56,6 +69,11 @@ struct Demo: View {
             QSColors.background.ignoresSafeArea()
 
             VStack(spacing: QSSpacing.md) {
+                UIKitLabel(text: name)
+                Button("Button") {
+                    name = "QRSafe"
+                }
+                    .buttonStyle(QSPrimaryButtonStyle())
                 Text("Verdict").font(Font.qsVerdict)
                 Text("Title").font(Font.qsTitle)
                 Text("heading").font(Font.qsHeading)
