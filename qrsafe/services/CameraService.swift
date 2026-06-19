@@ -1,4 +1,4 @@
-@preconcurrency import AVFoundation
+import AVFoundation
 import Foundation
 
 class MetadataReceiver: NSObject, AVCaptureMetadataOutputObjectsDelegate {
@@ -6,12 +6,23 @@ class MetadataReceiver: NSObject, AVCaptureMetadataOutputObjectsDelegate {
         super.init()
     }
 
+    nonisolated(unsafe) var onDecode: ((String) -> Void)?
+
     nonisolated func metadataOutput(
         _ output: AVCaptureMetadataOutput,
         didOutput metadataObjects: [AVMetadataObject],
         from connection: AVCaptureConnection
     ) {
-        print("Camera saw a code")
+        for metadataObject in metadataObjects {
+            guard
+                let code = metadataObject
+                    as? AVMetadataMachineReadableCodeObject,
+                let stringValue = code.stringValue
+            else { continue }
+            Task { @MainActor [weak self] in
+                self?.onDecode?(stringValue)
+            }
+        }
     }
 }
 
@@ -46,7 +57,6 @@ actor CameraService {
 
     func captureDeviceOutput(session: AVCaptureSession) {
         let queue = DispatchQueue(label: "qrsafe.metadata")
-     
 
         let output = AVCaptureMetadataOutput()
 
@@ -86,5 +96,9 @@ actor CameraService {
         guard state == .running else { return }
         session.stopRunning()
         state = .idle
+    }
+    
+    func onScan(_ handler: @escaping @Sendable (String) -> Void) {
+        receiver.onDecode = handler
     }
 }
