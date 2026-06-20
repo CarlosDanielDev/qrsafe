@@ -5,25 +5,26 @@ struct ScannerView: View {
 
     var body: some View {
         NavigationStack {
-            CameraPreview(session: vm.previewSession)
-                .navigationTitle("Scanner")
-                .overlay(alignment: .bottom) {
-                    switch vm.state {
-                    case .detected(let code):
-                        Text(code)
-                            .font(Font.qsVerdict)
-                            .foregroundStyle(Color.qsSafe)
-                    case .idle:
-                        Text("No Code detected")
-                            .font(Font.qsVerdict)
-                            .foregroundStyle(Color.qsWarning)
-                    case .scanning:
-                        Text("Scanning...")
-                            .font(Font.qsVerdict)
-                            .foregroundStyle(Color.qsWarning)
-                    }
-
+            ZStack {
+                CameraPreview(session: vm.previewSession)
+                ScannerOverlayView()
+            }
+            .overlay(alignment: .bottom) {
+                switch vm.state {
+                case .detected(let code):
+                    Text(code)
+                        .font(Font.qsVerdict)
+                        .foregroundStyle(Color.qsSafe)
+                case .idle:
+                    Text("No Code detected")
+                        .font(Font.qsVerdict)
+                        .foregroundStyle(Color.qsWarning)
+                case .scanning:
+                    Text("Scanning...")
+                        .font(Font.qsVerdict)
+                        .foregroundStyle(Color.qsWarning)
                 }
+            }
         }
         .onDisappear {
             Task { await vm.stop() }
@@ -35,4 +36,8 @@ struct ScannerView: View {
             await vm.start()
         }
     }
+}
+
+#Preview {
+    ScannerView()
 }
