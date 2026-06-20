@@ -30,9 +30,9 @@ struct ScanCounterTests {
             for _ in 0..<1000 {
                 group.addTask { await counter.record() }
             }
-            
+
         }
-        
+
         #expect(await counter.total == 1000)
     }
 
@@ -44,5 +44,30 @@ struct ScanCounterTests {
         let model = ScanCounterModel()
         await model.refresh(from: counter)
         #expect(model.displayCount == 2)
+    }
+}
+
+struct ScannerViewModelTests {
+
+    @MainActor
+    @Test func startsIdle() {
+        let vm = ScannerViewModel()
+        #expect(vm.state == .idle)
+    }
+
+    @MainActor
+    @Test func resetReturnsToScanning() {
+        let vm = ScannerViewModel()
+        vm.reset()
+        #expect(vm.state == .scanning)
+    }
+
+    @MainActor
+    @Test func handleDetectedMovesToDetected() {
+        let stringDetected = "https://carlosdaniel.dev"
+        let vm = ScannerViewModel()
+        vm.handleDetected(stringDetected)
+        #expect(vm.state == .detected(stringDetected))
+
     }
 }
