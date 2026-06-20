@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "915A9A40-F4C0-40FB-A635-95968AC85FD3",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:qrsafe.xcodeproj",
+        "identifier" : "072ACA962FA19F2D00A4188C",
+        "name" : "qrsafeTests"
+      }
+    }
+  ],
+  "version" : 1
+}
