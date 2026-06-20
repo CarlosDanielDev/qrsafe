@@ -6,16 +6,27 @@ import Observation
 final class ScannerViewModel {
     private(set) var state: ScanState = .idle
     private let cameraService = CameraService()
+    private let feedbackService: FeedbackPoviding
     var previewSession: AVCaptureSession { cameraService.session }
-    
-    func handleDetected(_ code: String) {
-        state = .detected(code)
+
+    init(feedback: FeedbackPoviding? = nil) {
+        self.feedbackService = feedback ?? FeedbackService()
     }
-    
+
+    func handleDetected(_ code: String) {
+        var wasDetected = false
+        if case .detected = state { wasDetected = false }
+        state = .detected(code)
+        if !wasDetected {
+            feedbackService.success()
+        }
+
+    }
+
     func reset() {
         state = .scanning
     }
-    
+
     func start() async {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         let granted: Bool
@@ -43,7 +54,7 @@ final class ScannerViewModel {
         await cameraService.start()
         state = .scanning
     }
-    
+
     func stop() async {
         await cameraService.stop()
     }
