@@ -12,7 +12,13 @@
 
   },
   "testTargets" : [
-
+    {
+      "target" : {
+        "containerPath" : "container:qrsafe.xcodeproj",
+        "identifier" : "072ACA962FA19F2D00A4188C",
+        "name" : "qrsafeTests"
+      }
+    }
   ],
   "version" : 1
 }
