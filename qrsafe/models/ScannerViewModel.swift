@@ -29,22 +29,15 @@ final class ScannerViewModel {
 
     func start() async {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
-        let granted: Bool
-        switch status {
-        case .authorized:
-            granted = true
-        case .notDetermined:
-            granted = await AVCaptureDevice.requestAccess(for: .video)
-        case .restricted, .denied:
-            granted = false
-        @unknown default:
-            granted = false
-        }
-
+        let granted: Bool = await checkPermissions()
+        
         guard granted else {
+            state = .permissionDenied
             return
         }
+        
         await cameraService.configure()
+        
         await cameraService.onScan { [weak self] code in
             guard let viewModel = self else { return }
             Task { @MainActor in
@@ -57,5 +50,21 @@ final class ScannerViewModel {
 
     func stop() async {
         await cameraService.stop()
+    }
+
+    func checkPermissions() async -> Bool {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        let granted: Bool
+        switch status {
+        case .authorized:
+            granted = true
+        case .notDetermined:
+            granted = await AVCaptureDevice.requestAccess(for: .video)
+        case .restricted, .denied:
+            granted = false
+        @unknown default:
+            granted = false
+        }
+        return granted
     }
 }
