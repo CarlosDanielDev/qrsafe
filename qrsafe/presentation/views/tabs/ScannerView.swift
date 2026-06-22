@@ -34,6 +34,9 @@ struct ScannerView: View {
                     }
                 }
             }
+            .overlay(alignment: .bottomTrailing) {
+                TorchButton(isTorchOn: vm.isTorchOn, onToggle: vm.toggleTorch)
+            }
             .onDisappear {
                 Task { await vm.stop() }
             }

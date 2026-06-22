@@ -5,8 +5,10 @@ import Observation
 @MainActor
 final class ScannerViewModel {
     private(set) var state: ScanState = .idle
+    private(set) var isTorchOn = false
     private let cameraService = CameraService()
     private let feedbackService: FeedbackPoviding
+
     var previewSession: AVCaptureSession { cameraService.session }
 
     init(feedback: FeedbackPoviding? = nil) {
@@ -28,16 +30,15 @@ final class ScannerViewModel {
     }
 
     func start() async {
-        let status = AVCaptureDevice.authorizationStatus(for: .video)
         let granted: Bool = await checkPermissions()
-        
+
         guard granted else {
             state = .permissionDenied
             return
         }
-        
+
         await cameraService.configure()
-        
+
         await cameraService.onScan { [weak self] code in
             guard let viewModel = self else { return }
             Task { @MainActor in
@@ -66,5 +67,26 @@ final class ScannerViewModel {
             granted = false
         }
         return granted
+    }
+
+    func toggleTorch() {
+        isTorchOn.toggle()
+        guard let device = AVCaptureDevice.default(for: .video), device.hasTorch
+        else {
+            print("Torch is not available on this device simulator.")
+            return
+        }
+
+        do {
+            try device.lockForConfiguration()
+
+            device.torchMode = isTorchOn ? .on : .off
+
+            device.unlockForConfiguration()
+        } catch {
+            print(
+                "Could not lock configuration or toggle torch: \(error.localizedDescription)"
+            )
+        }
     }
 }
