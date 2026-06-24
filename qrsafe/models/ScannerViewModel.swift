@@ -8,6 +8,8 @@ final class ScannerViewModel {
     private(set) var isTorchOn = false
     private let cameraService = CameraService()
     private let feedbackService: FeedbackPoviding
+    private(set) var lastDetectedCode: String?
+    private(set) var lastDetectedAt: Date?
 
     var previewSession: AVCaptureSession { cameraService.session }
 
@@ -16,6 +18,17 @@ final class ScannerViewModel {
     }
 
     func handleDetected(_ code: String) {
+        let now = Date()
+        let isEqualCode = code == lastDetectedCode
+        let validLastDate = lastDetectedAt ?? now
+        let elapsedSeconds = Date().timeIntervalSince(validLastDate)
+        let threshold = ModelConstants.THRESHOLD
+        
+        if isEqualCode && elapsedSeconds < threshold { return }
+        
+        lastDetectedCode = code
+        lastDetectedAt = now
+        
         var wasDetected = false
         if case .detected = state { wasDetected = false }
         state = .detected(code)
@@ -26,6 +39,8 @@ final class ScannerViewModel {
     }
 
     func reset() {
+        lastDetectedAt = nil
+        lastDetectedCode = nil
         state = .scanning
     }
 
