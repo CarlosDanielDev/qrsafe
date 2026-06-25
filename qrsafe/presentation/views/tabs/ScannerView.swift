@@ -6,7 +6,6 @@ struct ScannerView: View {
     var body: some View {
         if vm.state == .permissionDenied {
             DeniedPermissions()
-
         } else {
             NavigationStack {
                 ZStack {
@@ -36,6 +35,13 @@ struct ScannerView: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 TorchButton(isTorchOn: vm.isTorchOn, onToggle: vm.toggleTorch)
+            }
+            .overlay(alignment: .topLeading) {
+                #if DEBUG
+                    Button("Inject") {
+                        vm.handleDetected("https://carlosdaniel.dev")
+                    }
+                #endif
             }
             .onDisappear {
                 Task { await vm.stop() }
