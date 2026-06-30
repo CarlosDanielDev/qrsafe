@@ -1,6 +1,23 @@
+import AVFoundation
 import Testing
 
 @testable import qrsafe
+
+class FakeSession: CaptureSessionProviding {
+    var session: AVCaptureSession = AVCaptureSession()
+    var capturedHandler: ((String) -> Void)?
+
+    func configure() async {}
+    func start() async {}
+    func stop() async {}
+    func onScan(_ handler: @escaping @Sendable (String) -> Void) async {
+        capturedHandler = handler
+    }
+
+    func simulateDetection(_ code: String) {
+        capturedHandler?(code)
+    }
+}
 
 struct CheckerTests {
     @Test func defaultNameDerivesFromType() {
@@ -69,5 +86,15 @@ struct ScannerViewModelTests {
         vm.handleDetected(stringDetected)
         #expect(vm.state == .detected(stringDetected))
 
+    }
+
+    @MainActor
+    @Test func injectCustomSession() async {
+        let fake = FakeSession()
+        let vm = ScannerViewModel(camera: fake)
+        await vm.start()
+        fake.simulateDetection("https://evil.com")
+        await Task.yield()
+        #expect(vm.state == .detected("https://evil.com"))
     }
 }
