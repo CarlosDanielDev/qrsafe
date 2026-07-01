@@ -18,6 +18,7 @@ struct Dim: View {
             }
             .fill(.qsBackground.opacity(0.7), style: FillStyle(eoFill: true))
         }
+        .accessibilityHidden(true)
     }
 }
 
