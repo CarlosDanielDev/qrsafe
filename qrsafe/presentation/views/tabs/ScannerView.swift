@@ -10,7 +10,16 @@ struct ScannerView: View {
             NavigationStack {
                 ZStack {
                     CameraPreview(session: vm.previewSession)
+                        .accessibilityHidden(true)
                     ScannerOverlayView()
+                }
+                .onChange(of: vm.state) { _, newState in
+                    if case .detected(let code) = newState {
+                        UIAccessibility.post(
+                            notification: .announcement,
+                            argument: code
+                        )
+                    }
                 }
                 .overlay(alignment: .bottom) {
                     switch vm.state {
@@ -47,6 +56,9 @@ struct ScannerView: View {
                 Task { await vm.stop() }
             }
             .onTapGesture {
+                vm.reset()
+            }
+            .accessibilityAction(named: "Reset") {
                 vm.reset()
             }
             .task {

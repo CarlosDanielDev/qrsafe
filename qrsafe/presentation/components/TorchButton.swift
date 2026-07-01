@@ -4,6 +4,10 @@ struct TorchButton: View {
     var isTorchOn: Bool
     var onToggle: () -> Void
 
+    var accessibilityLabelValue: String {
+        "Toggle \(isTorchOn ? "off" : "on") flashlight"
+    }
+
     var body: some View {
         VStack(spacing: 20) {
             Button {
@@ -18,11 +22,12 @@ struct TorchButton: View {
             .tint(.qsWarning)
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .accessibilityLabel(accessibilityLabelValue)
+            .accessibilityHint("Turns the flashlight on or off")
             .onChange(of: isTorchOn) { _, newValue in
                 onToggle()
             }
         }
         .padding()
     }
-
 }
