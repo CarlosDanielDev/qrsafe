@@ -1,7 +1,7 @@
 import AudioToolbox
 import UIKit
 
-protocol FeedbackPoviding {
+protocol FeedbackProviding {
     func success()
     func warning()
     func error()
@@ -9,7 +9,7 @@ protocol FeedbackPoviding {
 
 
 @MainActor
-final class FeedbackService: FeedbackPoviding {
+final class FeedbackService: FeedbackProviding {
     private let generator = UINotificationFeedbackGenerator()
     func success() {
         generator.notificationOccurred(.success)
