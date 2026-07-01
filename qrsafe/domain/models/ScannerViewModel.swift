@@ -13,7 +13,10 @@ final class ScannerViewModel {
 
     var previewSession: AVCaptureSession { cameraService.session }
 
-    init(feedback: FeedbackProviding? = nil, camera: CaptureSessionProviding? = nil) {
+    init(
+        feedback: FeedbackProviding? = nil,
+        camera: CaptureSessionProviding? = nil
+    ) {
         self.feedbackService = feedback ?? FeedbackService()
         self.cameraService = camera ?? CameraService()
     }
@@ -24,14 +27,14 @@ final class ScannerViewModel {
         let validLastDate = lastDetectedAt ?? now
         let elapsedSeconds = Date().timeIntervalSince(validLastDate)
         let threshold = ModelConstants.THRESHOLD
-        
+
         if isEqualCode && elapsedSeconds < threshold { return }
-        
+
         lastDetectedCode = code
         lastDetectedAt = now
-        
+
         var wasDetected = false
-        if case .detected = state { wasDetected = false }
+        if case .detected = state { wasDetected = true }
         state = .detected(code)
         if !wasDetected {
             feedbackService.success()
@@ -69,7 +72,7 @@ final class ScannerViewModel {
         await cameraService.stop()
     }
 
-    func checkPermissions() async -> Bool {
+    private func checkPermissions() async -> Bool {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         let granted: Bool
         switch status {
