@@ -7,13 +7,13 @@ final class ScannerViewModel {
     private(set) var state: ScanState = .idle
     private(set) var isTorchOn = false
     private let cameraService: CaptureSessionProviding
-    private let feedbackService: FeedbackPoviding
+    private let feedbackService: FeedbackProviding
     private(set) var lastDetectedCode: String?
     private(set) var lastDetectedAt: Date?
 
     var previewSession: AVCaptureSession { cameraService.session }
 
-    init(feedback: FeedbackPoviding? = nil, camera: CaptureSessionProviding? = nil) {
+    init(feedback: FeedbackProviding? = nil, camera: CaptureSessionProviding? = nil) {
         self.feedbackService = feedback ?? FeedbackService()
         self.cameraService = camera ?? CameraService()
     }
