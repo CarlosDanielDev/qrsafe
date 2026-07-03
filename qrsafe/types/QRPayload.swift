@@ -1,5 +1,7 @@
 import Foundation
 
-enum QRPayload: String, CaseIterable {
-    case URL, TEXT, WIFI
+enum QRPayload {
+    case url(Foundation.URL)
+    case text(String)
+    case other(String)
 }
