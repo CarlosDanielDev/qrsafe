@@ -1,4 +1,5 @@
 import AVFoundation
+import Foundation
 import Testing
 
 @testable import qrsafe
@@ -25,7 +26,10 @@ struct CheckerTests {
     }
 
     @Test func alawaysSafeCheckerPasses() {
-        #expect(AlwaysTypeSafe().check(.URL) == true)
+        #expect(
+            AlwaysTypeSafe().check(.url(URL(string: "https://example.com")!))
+                == true
+        )
     }
 }
 
@@ -61,6 +65,28 @@ struct ScanCounterTests {
         let model = ScanCounterModel()
         await model.refresh(from: counter)
         #expect(model.displayCount == 2)
+    }
+}
+
+struct URLParserServiceTests {
+    @Test func httpsURLParsesAsURL() {
+        let result = URLParserService.parse("https://example.com")
+        if case .url = result {} else { Issue.record("Expected .url") }
+    }
+
+    @Test func wifiQRCodeLParsesAsWIFI() {
+        let result = URLParserService.parse("WIFI:")
+        if case .other = result {} else { Issue.record("Expected .other") }
+    }
+
+    @Test func normalTextParsesAsTEXT() {
+        let result = URLParserService.parse("hey you!")
+        if case .text = result {} else { Issue.record("Expected .text") }
+    }
+
+    @Test func emptyStringParsesAsEmptyTEXT() {
+        let result = URLParserService.parse("")
+        if case .text = result {} else { Issue.record("Expected .text") }
     }
 }
 
