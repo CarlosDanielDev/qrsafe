@@ -43,6 +43,38 @@ struct StringURLTests {
     }
 }
 
+struct ParsedURLTests {
+    @Test func sameURLsAreEqual() {
+         let urlA: ParsedURL? = ParsedURL(
+            url: URL(string: "https://example.com")!
+        )
+         let urlB: ParsedURL? = ParsedURL(
+            url: URL(string: "https://example.com")!
+        )
+        
+        #expect(urlA == urlB)
+    }
+    
+    @Test func parseAllFields() {
+        let url: ParsedURL? = ParsedURL(url: URL(string:  "https://sub.example.com/path?key=val")!)
+        #expect(url?.scheme == "https")
+        #expect(url?.host == "sub.example.com")
+        #expect(url?.path == "/path")
+    }
+    
+    @Test func compareDifferentURL() {
+        let urlA: ParsedURL? = ParsedURL(
+            url: URL(string: "https://example.com")!
+        )
+        
+        let urlB: ParsedURL? = ParsedURL(
+            url: URL(string: "http://example.com")!
+        )
+
+        #expect(urlA != urlB)
+    }
+}
+
 struct ScanCounterTests {
 
     @Test func recordScanConcurrentlyWithoutLosingUpdate() async {
