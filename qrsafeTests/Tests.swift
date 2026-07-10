@@ -156,3 +156,16 @@ struct ScannerViewModelTests {
         #expect(vm.state == .detected("https://evil.com"))
     }
 }
+
+struct SafetyAnalyzerTests {
+    @Test func hasCorrectSafetyReportShape() async {
+        let analyzer = SafetyAnalyserService()
+        let url = URL(string: "https://evil.com")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyzer.analyze(parsed: parsed)
+        
+        #expect(report.findings.isEmpty)
+        #expect(report.parsedUrl == parsed)
+    }
+    
+}
