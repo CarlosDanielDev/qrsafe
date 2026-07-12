@@ -1,5 +1,5 @@
 import Foundation
 
 protocol URLChecking {
-    func check(url: ParsedURL) -> String?
+    nonisolated func check(url: ParsedURL) -> String?
 }
