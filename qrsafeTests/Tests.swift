@@ -168,4 +168,27 @@ struct SafetyAnalyzerTests {
         #expect(report.parsedUrl == parsed)
     }
     
+    @Test func hasFindingsOnTheReport() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "http://evil.com")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+        
+        #expect(report.findings.count == 1)
+    }
+    
+}
+
+
+struct HTTPSCheckerServiceTests {
+    @Test(arguments: [
+        ("https://carlosdaniel.dev", false),
+        ("http://evil.com", true)
+    ]) func flagInsecureScheme(urlScheme: String, expectFindings: Bool) async {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = HTTPSCheckerService().check(url: parsed)
+        
+        #expect((findings != nil) == expectFindings)
+    }
 }
