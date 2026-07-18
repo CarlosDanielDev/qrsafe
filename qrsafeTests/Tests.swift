@@ -215,6 +215,15 @@ struct SafetyAnalyzerTests {
         #expect(report.findings.count == 3)
     }
 
+    @Test func reportsHomographDomain() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "https://аpple.com")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+
+        #expect(report.findings.count == 1)
+    }
+
 }
 
 struct HTTPSCheckerServiceTests {
@@ -287,6 +296,21 @@ struct SubdomainDepthCheckerServiceTests {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
         let findings = SubdomainDepthCheckerService().check(url: parsed)
+
+        #expect((findings != nil) == expectFindings)
+    }
+}
+
+struct HomographCheckerServiceTests {
+    @Test(arguments: [
+        ("https://xn--pple-43d.com", true),
+        ("https://аpple.com", true),
+        ("https://carlosdaniel.dev", false),
+        ("https://apple.com", false),
+    ]) func flagPunycodeDomains(urlScheme: String, expectFindings: Bool) async {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = HomographCheckerService().check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }
