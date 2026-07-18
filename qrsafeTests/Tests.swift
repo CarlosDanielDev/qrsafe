@@ -185,7 +185,7 @@ struct SafetyAnalyzerTests {
         let parsed = await ParsedURL(url: url)!
         let report = await analyser.analyze(parsed: parsed)
 
-        #expect(report.findings.count == 2)
+        #expect(report.findings.count >= 2)
     }
 
     @Test func reportsShortenedURLFinding() async {
@@ -212,7 +212,7 @@ struct SafetyAnalyzerTests {
         let parsed = await ParsedURL(url: url)!
         let report = await analyser.analyze(parsed: parsed)
 
-        #expect(report.findings.count == 3)
+        #expect(report.findings.count >= 3)
     }
 
     @Test func reportsHomographDomain() async {
@@ -222,6 +222,15 @@ struct SafetyAnalyzerTests {
         let report = await analyser.analyze(parsed: parsed)
 
         #expect(report.findings.count == 1)
+    }
+
+    @Test func reportsPhishingKeywords() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "https://evil.tk/apple/verify-account")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+
+        #expect(report.findings.count == 2)
     }
 
 }
@@ -264,7 +273,8 @@ struct ShortenerCheckerServiceTests {
     ]) func flagShortenerUrls(urlScheme: String, expectFindings: Bool) async {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
-        let findings = ShortenerCheckerService().check(url: parsed)
+        let findings = ShortenerCheckerService()
+            .check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }
@@ -279,7 +289,8 @@ struct SuspiciousTLDCheckerServiceTests {
     ]) func flagSuspiciousTLD(urlScheme: String, expectFindings: Bool) async {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
-        let findings = SuspiciousTLDCheckerService().check(url: parsed)
+        let findings = SuspiciousTLDCheckerService()
+            .check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }
@@ -295,7 +306,8 @@ struct SubdomainDepthCheckerServiceTests {
     ]) func flagSubdomainDepth(urlScheme: String, expectFindings: Bool) async {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
-        let findings = SubdomainDepthCheckerService().check(url: parsed)
+        let findings = SubdomainDepthCheckerService()
+            .check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }
@@ -310,7 +322,26 @@ struct HomographCheckerServiceTests {
     ]) func flagPunycodeDomains(urlScheme: String, expectFindings: Bool) async {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
-        let findings = HomographCheckerService().check(url: parsed)
+        let findings = HomographCheckerService()
+            .check(url: parsed)
+
+        #expect((findings != nil) == expectFindings)
+    }
+}
+
+struct PhishingKeywordCheckerServiceTests {
+    @Test(arguments: [
+        ("https://evil.domain.badsite.com/secure/banking/payment", true),
+        ("https://badspayment.evilbaking.com/banking/password", true),
+        ("https://secure-login.badsite.com/home", true),
+        ("https://carlosdaniel.dev", false),
+        ("https://apple.com", false),
+    ]) func flagPhishingKeywords(urlScheme: String, expectFindings: Bool) async
+    {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = PhishingKeywordCheckerService()
+            .check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }

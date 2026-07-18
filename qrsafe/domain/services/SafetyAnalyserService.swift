@@ -11,6 +11,7 @@ actor SafetyAnalyserService {
             SuspiciousTLDCheckerService(),
             SubdomainDepthCheckerService(),
             HomographCheckerService(),
+            PhishingKeywordCheckerService(),
         ]
     ) {
         self.checkers = checkers
