@@ -206,6 +206,15 @@ struct SafetyAnalyzerTests {
         #expect(report.findings.count == 2)
     }
 
+    @Test func reportsManySuspiciousSubdomainDepth() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "http://www.apple.com.login.test.zip/abc")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+
+        #expect(report.findings.count == 3)
+    }
+
 }
 
 struct HTTPSCheckerServiceTests {
@@ -262,6 +271,22 @@ struct SuspiciousTLDCheckerServiceTests {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
         let findings = SuspiciousTLDCheckerService().check(url: parsed)
+
+        #expect((findings != nil) == expectFindings)
+    }
+}
+
+struct SubdomainDepthCheckerServiceTests {
+    @Test(arguments: [
+        ("https://apple.com.br.test.zip/abc", true),
+        ("https://google.com.br.test.tk/xyz", true),
+        ("http://192.168.0.1/xyz", false),
+        ("https://zip.carlosdaniel.dev", false),
+        ("https://apple.com", false),
+    ]) func flagSubdomainDepth(urlScheme: String, expectFindings: Bool) async {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = SubdomainDepthCheckerService().check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }

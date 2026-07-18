@@ -9,6 +9,7 @@ actor SafetyAnalyserService {
             IPHostCheckerService(),
             ShortenerCheckerService(),
             SuspiciousTLDCheckerService(),
+            SubdomainDepthCheckerService(),
         ]
     ) {
         self.checkers = checkers
