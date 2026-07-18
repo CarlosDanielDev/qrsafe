@@ -188,6 +188,15 @@ struct SafetyAnalyzerTests {
         #expect(report.findings.count == 2)
     }
 
+    @Test func reportsShortenedURLFinding() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "http://bit.ly/abc")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+
+        #expect(report.findings.count == 2)
+    }
+
 }
 
 struct HTTPSCheckerServiceTests {
@@ -214,6 +223,21 @@ struct IPHostCheckerServiceTests {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
         let findings = IPHostCheckerService().check(url: parsed)
+
+        #expect((findings != nil) == expectFindings)
+    }
+}
+
+struct ShortenerCheckerServiceTests {
+    @Test(arguments: [
+        ("https://bit.ly/abc", true),
+        ("https://tinyurl.com/xyz", true),
+        ("https://carlosdaniel.dev", false),
+        ("https://notbit.ly", false),
+    ]) func flagShortenerUrls(urlScheme: String, expectFindings: Bool) async {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = ShortenerCheckerService().check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }
