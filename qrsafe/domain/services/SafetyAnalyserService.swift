@@ -6,6 +6,7 @@ actor SafetyAnalyserService {
     init(
         checkers: [URLChecking] = [
             HTTPSCheckerService(), IPHostCheckerService(),
+            ShortenerCheckerService(),
         ]
     ) {
         self.checkers = checkers
