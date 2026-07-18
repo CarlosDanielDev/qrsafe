@@ -3,7 +3,11 @@ import Foundation
 actor SafetyAnalyserService {
     private let checkers: [URLChecking]
 
-    init(checkers: [URLChecking] = [HTTPSCheckerService()]) {
+    init(
+        checkers: [URLChecking] = [
+            HTTPSCheckerService(), IPHostCheckerService(),
+        ]
+    ) {
         self.checkers = checkers
     }
 

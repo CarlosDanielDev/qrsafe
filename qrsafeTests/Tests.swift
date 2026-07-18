@@ -45,28 +45,30 @@ struct StringURLTests {
 
 struct ParsedURLTests {
     @Test func sameURLsAreEqual() {
-         let urlA: ParsedURL? = ParsedURL(
+        let urlA: ParsedURL? = ParsedURL(
             url: URL(string: "https://example.com")!
         )
-         let urlB: ParsedURL? = ParsedURL(
+        let urlB: ParsedURL? = ParsedURL(
             url: URL(string: "https://example.com")!
         )
-        
+
         #expect(urlA == urlB)
     }
-    
+
     @Test func parseAllFields() {
-        let url: ParsedURL? = ParsedURL(url: URL(string:  "https://sub.example.com/path?key=val")!)
+        let url: ParsedURL? = ParsedURL(
+            url: URL(string: "https://sub.example.com/path?key=val")!
+        )
         #expect(url?.scheme == "https")
         #expect(url?.host == "sub.example.com")
         #expect(url?.path == "/path")
     }
-    
+
     @Test func compareDifferentURL() {
         let urlA: ParsedURL? = ParsedURL(
             url: URL(string: "https://example.com")!
         )
-        
+
         let urlB: ParsedURL? = ParsedURL(
             url: URL(string: "http://example.com")!
         )
@@ -163,32 +165,56 @@ struct SafetyAnalyzerTests {
         let url = URL(string: "https://evil.com")!
         let parsed = await ParsedURL(url: url)!
         let report = await analyzer.analyze(parsed: parsed)
-        
+
         #expect(report.findings.isEmpty)
         #expect(report.parsedUrl == parsed)
     }
-    
+
     @Test func hasFindingsOnTheReport() async {
         let analyser = SafetyAnalyserService()
         let url = URL(string: "http://evil.com")!
         let parsed = await ParsedURL(url: url)!
         let report = await analyser.analyze(parsed: parsed)
-        
+
         #expect(report.findings.count == 1)
     }
-    
-}
 
+    @Test func reportsRawIPFinding() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "http://192.168.0.1/login")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+
+        #expect(report.findings.count == 2)
+    }
+
+}
 
 struct HTTPSCheckerServiceTests {
     @Test(arguments: [
         ("https://carlosdaniel.dev", false),
-        ("http://evil.com", true)
+        ("http://evil.com", true),
     ]) func flagInsecureScheme(urlScheme: String, expectFindings: Bool) async {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
         let findings = HTTPSCheckerService().check(url: parsed)
-        
+
+        #expect((findings != nil) == expectFindings)
+    }
+}
+
+struct IPHostCheckerServiceTests {
+    @Test(arguments: [
+        ("http://192.168.0.1/login", true),
+        ("http://[2001:db8::1]/", true),
+        ("https://carlodaniel.dev", false),
+        ("http://1.2.3.4.evil.com", false),
+        ("http://999.999.999.999", false),
+    ]) func flagInsecureIp(urlScheme: String, expectFindings: Bool) async {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = IPHostCheckerService().check(url: parsed)
+
         #expect((findings != nil) == expectFindings)
     }
 }
