@@ -197,6 +197,15 @@ struct SafetyAnalyzerTests {
         #expect(report.findings.count == 2)
     }
 
+    @Test func reportsGenericTLDs() async {
+        let analyser = SafetyAnalyserService()
+        let url = URL(string: "http://test.zip/abc")!
+        let parsed = await ParsedURL(url: url)!
+        let report = await analyser.analyze(parsed: parsed)
+
+        #expect(report.findings.count == 2)
+    }
+
 }
 
 struct HTTPSCheckerServiceTests {
@@ -238,6 +247,21 @@ struct ShortenerCheckerServiceTests {
         let url = URL(string: urlScheme)!
         let parsed = await ParsedURL(url: url)!
         let findings = ShortenerCheckerService().check(url: parsed)
+
+        #expect((findings != nil) == expectFindings)
+    }
+}
+
+struct SuspiciousTLDCheckerServiceTests {
+    @Test(arguments: [
+        ("https://test.zip/abc", true),
+        ("https://test.tk/xyz", true),
+        ("https://zip.carlosdaniel.dev", false),
+        ("https://apple.com", false),
+    ]) func flagSuspiciousTLD(urlScheme: String, expectFindings: Bool) async {
+        let url = URL(string: urlScheme)!
+        let parsed = await ParsedURL(url: url)!
+        let findings = SuspiciousTLDCheckerService().check(url: parsed)
 
         #expect((findings != nil) == expectFindings)
     }
